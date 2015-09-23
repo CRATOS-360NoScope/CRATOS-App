@@ -10,14 +10,14 @@ import android.view.ViewGroup;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class Home_ActivityFragment extends Fragment {
+public class Fire_Mode_ActivityFragment extends Fragment {
 
-    public Home_ActivityFragment() {
+    public Fire_Mode_ActivityFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        return inflater.inflate(R.layout.fragment_fire__mode, container, false);
     }
 }

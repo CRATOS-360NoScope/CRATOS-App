@@ -1,5 +1,5 @@
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:id="@+id/fragment"
-    android:name="com.example.alexander.cratos.Home_Fragment"
-    tools:layout="@layout/fragment_home" android:layout_width="match_parent"
+    android:name="com.example.alexander.cratos.Fire_Mode_ActivityFragment"
+    tools:layout="@layout/fragment_fire__mode" android:layout_width="match_parent"
     android:layout_height="match_parent" />
