@@ -2,5 +2,7 @@
     <string name="app_name">CRATOS</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="bluetooth_connect">Bluetooth Connect</string>
+    <string name="bluetooth_stop">Stop Bluetooth</string>
     <string name="title_activity_fire__mode_">Fire Mode</string>
 </resources>
