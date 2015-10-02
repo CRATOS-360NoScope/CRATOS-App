@@ -38,6 +38,7 @@ public class Home_Fragment extends Fragment {
         fireModeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Switch to other_firing_mode to see/test it.
                 Intent intent = new Intent(getActivity(), Fire_Mode_Activity.class);
                 startActivity(intent);
             }
