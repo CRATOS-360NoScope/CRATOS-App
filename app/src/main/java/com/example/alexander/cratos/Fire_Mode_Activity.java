@@ -28,7 +28,7 @@ public class Fire_Mode_Activity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fire__mode);
+        setContentView(R.layout.activity_other_fire__mode);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("control-click"));
         bt = new BluetoothSPP(getApplicationContext());

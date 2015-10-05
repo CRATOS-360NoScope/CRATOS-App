@@ -39,10 +39,10 @@
         android:layout_alignParentRight="true" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
         android:id="@+id/fireButton"
-        android:background="@drawable/round_button"
+        android:background="@drawable/firing_button"
         android:text="FIRE"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"/>

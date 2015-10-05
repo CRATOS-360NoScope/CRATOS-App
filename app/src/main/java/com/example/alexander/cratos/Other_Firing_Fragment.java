@@ -19,6 +19,8 @@ import com.zerokol.views.JoystickView.OnJoystickMoveListener;
 public class Other_Firing_Fragment extends Fragment {
     Button fireButton;
     JoystickView joystickView;
+    boolean sending_vertical = false;
+    boolean sending_horizontal = false;
 
     public Other_Firing_Fragment() {}
 
@@ -50,11 +52,17 @@ public class Other_Firing_Fragment extends Fragment {
                 if (power != 0) {
                     double radians = Math.toRadians(angle);
                     double vertical = Math.cos(radians) * power;
-                    double horisontal = Math.sin(radians) * power;
-                    System.out.println("vertical:" + vertical + "\n" + "horisontal:" + horisontal);
+                    double horizontal = Math.sin(radians) * power;
                     switch (direction) {
                         case JoystickView.FRONT:
-
+                            if (!sending_vertical) {
+                                if(sending_horizontal) {
+                                    sending_horizontal = false;
+                                    sendMessage("stop_horizontal");
+                                }
+                                sendMessage("up");
+                                sending_vertical = true;
+                            }
                             break;
 
                         case JoystickView.FRONT_RIGHT:
@@ -62,7 +70,14 @@ public class Other_Firing_Fragment extends Fragment {
                             break;
 
                         case JoystickView.RIGHT:
-
+                            if(!sending_horizontal) {
+                                if(sending_vertical) {
+                                    sending_vertical = false;
+                                    sendMessage("stop_vertical");
+                                }
+                                sendMessage("right");
+                                sending_horizontal = true;
+                            }
                             break;
 
                         case JoystickView.RIGHT_BOTTOM:
@@ -70,7 +85,14 @@ public class Other_Firing_Fragment extends Fragment {
                             break;
 
                         case JoystickView.BOTTOM:
-
+                            if (!sending_vertical) {
+                                if(sending_horizontal) {
+                                    sending_horizontal = false;
+                                    sendMessage("stop_horizontal");
+                                }
+                                sendMessage("down");
+                                sending_vertical = true;
+                            }
                             break;
 
                         case JoystickView.BOTTOM_LEFT:
@@ -78,12 +100,24 @@ public class Other_Firing_Fragment extends Fragment {
                             break;
 
                         case JoystickView.LEFT:
-
+                            if(!sending_horizontal) {
+                                if(sending_vertical) {
+                                    sending_vertical = false;
+                                    sendMessage("stop_vertical");
+                                }
+                                sendMessage("left");
+                                sending_horizontal = true;
+                            }
                             break;
 
                         case JoystickView.LEFT_FRONT:
 
                             break;
+                        default:
+                            sending_vertical = false;
+                            sending_horizontal = false;
+                            sendMessage("stop_horizontal");
+                            sendMessage("stop_vertical");
                     }
                 }
             }
