@@ -199,6 +199,7 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         Surface mySurface = new Surface(surface);
         myVid = MediaPlayer.create(this.getActivity(), R.raw.test);
+        myVid.setVolume(0,0);
         myVid.setSurface(mySurface);
         myVid.setLooping(true);
         myVid.start();
