@@ -24,13 +24,37 @@ import com.zerokol.views.JoystickView.OnJoystickMoveListener;
  * The fragment for the turret control. One of two possible files.
  */
 public class Other_Firing_Fragment extends Fragment implements TextureView.SurfaceTextureListener {
+
+    /**
+     * ThreeState variable
+     *
+     * Positive:
+     *  Horizontal: Right
+     *  Vertical: Up
+     *
+     * Negative:
+     *  Horizontal: Left
+     *  Vertical: Down
+     */
+    public enum ThreeState {
+        POSITIVE,
+        NOTHING,
+        NEGATIVE
+    }
+    private final String up = "up";
+    private final String down = "down";
+    private final String left = "left";
+    private final String right = "right";
+    private final String noV = "stop_vertical";
+    private final String noH = "stop_horizontal";
+
     private Button fireButton;
     private JoystickView joystickView;
     private TextureView textureView;
     private MediaPlayer myVid;
 
-    boolean sending_vertical = false;
-    boolean sending_horizontal = false;
+    ThreeState sending_vertical = ThreeState.NOTHING;
+    ThreeState sending_horizontal = ThreeState.NOTHING;
 
     public Other_Firing_Fragment() {}
 
@@ -63,74 +87,107 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
             @Override
             public void onValueChanged(int angle, int power, int direction) {
                 if (power != 0) {
-                    double radians = Math.toRadians(angle);
-                    double vertical = Math.cos(radians) * power;
-                    double horizontal = Math.sin(radians) * power;
+                    //double radians = Math.toRadians(angle);
+                    //double vertical = Math.cos(radians) * power;
+                    //double horizontal = Math.sin(radians) * power;
                     switch (direction) {
                         case JoystickView.FRONT:
-                            if (!sending_vertical) {
-                                if (sending_horizontal) {
-                                    sending_horizontal = false;
-                                    sendMessage("stop_horizontal");
-                                }
-                                sendMessage("up");
-                                sending_vertical = true;
+                            if(sending_vertical != ThreeState.POSITIVE) {
+                                sending_vertical = ThreeState.POSITIVE;
+                                sendMessage(up);
+                            }
+                            if(sending_horizontal != ThreeState.NOTHING) {
+                                sending_horizontal = ThreeState.NOTHING;
+                                sendMessage(noH);
                             }
                             break;
 
                         case JoystickView.FRONT_RIGHT:
-
+                            if(sending_vertical != ThreeState.POSITIVE) {
+                                sending_vertical = ThreeState.POSITIVE;
+                                sendMessage(up);
+                            }
+                            if(sending_horizontal != ThreeState.POSITIVE) {
+                                sending_horizontal = ThreeState.POSITIVE;
+                                sendMessage(right);
+                            }
                             break;
 
                         case JoystickView.RIGHT:
-                            if (!sending_horizontal) {
-                                if (sending_vertical) {
-                                    sending_vertical = false;
-                                    sendMessage("stop_vertical");
-                                }
-                                sendMessage("right");
-                                sending_horizontal = true;
+                            if(sending_vertical != ThreeState.NOTHING) {
+                                sending_vertical = ThreeState.NOTHING;
+                                sendMessage(noV);
+                            }
+                            if(sending_horizontal != ThreeState.POSITIVE) {
+                                sending_horizontal = ThreeState.POSITIVE;
+                                sendMessage(right);
                             }
                             break;
 
                         case JoystickView.RIGHT_BOTTOM:
-
+                            if(sending_vertical != ThreeState.NEGATIVE) {
+                                sending_vertical = ThreeState.NEGATIVE;
+                                sendMessage(down);
+                            }
+                            if(sending_horizontal != ThreeState.POSITIVE) {
+                                sending_horizontal = ThreeState.POSITIVE;
+                                sendMessage(right);
+                            }
                             break;
 
                         case JoystickView.BOTTOM:
-                            if (!sending_vertical) {
-                                if (sending_horizontal) {
-                                    sending_horizontal = false;
-                                    sendMessage("stop_horizontal");
-                                }
-                                sendMessage("down");
-                                sending_vertical = true;
+                            if(sending_vertical != ThreeState.NEGATIVE) {
+                                sending_vertical = ThreeState.NEGATIVE;
+                                sendMessage(down);
+                            }
+                            if(sending_horizontal != ThreeState.NOTHING) {
+                                sending_horizontal = ThreeState.NOTHING;
+                                sendMessage(noH);
                             }
                             break;
 
                         case JoystickView.BOTTOM_LEFT:
-
+                            if(sending_vertical != ThreeState.NEGATIVE) {
+                                sending_vertical = ThreeState.NEGATIVE;
+                                sendMessage(down);
+                            }
+                            if(sending_horizontal != ThreeState.NEGATIVE) {
+                                sending_horizontal = ThreeState.NEGATIVE;
+                                sendMessage(left);
+                            }
                             break;
 
                         case JoystickView.LEFT:
-                            if (!sending_horizontal) {
-                                if (sending_vertical) {
-                                    sending_vertical = false;
-                                    sendMessage("stop_vertical");
-                                }
-                                sendMessage("left");
-                                sending_horizontal = true;
+                            if(sending_vertical != ThreeState.NOTHING) {
+                                sending_vertical = ThreeState.NOTHING;
+                                sendMessage(noV);
+                            }
+                            if(sending_horizontal != ThreeState.NEGATIVE) {
+                                sending_horizontal = ThreeState.NEGATIVE;
+                                sendMessage(left);
                             }
                             break;
 
                         case JoystickView.LEFT_FRONT:
-
+                            if(sending_vertical != ThreeState.POSITIVE) {
+                                sending_vertical = ThreeState.POSITIVE;
+                                sendMessage(up);
+                            }
+                            if(sending_horizontal != ThreeState.NEGATIVE) {
+                                sending_horizontal = ThreeState.NEGATIVE;
+                                sendMessage(left);
+                            }
                             break;
+
                         default:
-                            sending_vertical = false;
-                            sending_horizontal = false;
-                            sendMessage("stop_horizontal");
-                            sendMessage("stop_vertical");
+                            if(sending_vertical != ThreeState.NOTHING) {
+                                sending_vertical = ThreeState.NOTHING;
+                                sendMessage(noV);
+                            }
+                            if(sending_horizontal != ThreeState.NOTHING) {
+                                sending_horizontal = ThreeState.NOTHING;
+                                sendMessage(noH);
+                            }
                     }
                 }
             }
