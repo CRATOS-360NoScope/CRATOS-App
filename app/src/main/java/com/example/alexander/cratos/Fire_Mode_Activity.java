@@ -1,10 +1,12 @@
 package com.example.alexander.cratos;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
@@ -29,6 +32,10 @@ public class Fire_Mode_Activity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_other_fire__mode);
+
+        FragmentManager fm = getSupportFragmentManager();
+        final Other_Firing_Fragment f = (Other_Firing_Fragment) fm.findFragmentById(R.id.fragment);
+
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("control-click"));
         bt = new BluetoothSPP(getApplicationContext());
@@ -41,6 +48,7 @@ public class Fire_Mode_Activity extends AppCompatActivity{
             public void onDeviceConnected(String name, String address) {
                 Log.d(TAG, "Device Connected: " + name);
                 Toast.makeText(Fire_Mode_Activity.this, "Connected to "+ name, Toast.LENGTH_SHORT).show();
+                f.changeToggleButtonOnText();
             }
 
             public void onDeviceDisconnected() {
@@ -51,6 +59,7 @@ public class Fire_Mode_Activity extends AppCompatActivity{
             public void onDeviceConnectionFailed() {
                 Log.d(TAG, "Device Connection Failed");
                 Toast.makeText(Fire_Mode_Activity.this, "Connection Failed", Toast.LENGTH_SHORT).show();
+                f.toggleToggleButton();
 
             }
         });
@@ -84,8 +93,8 @@ public class Fire_Mode_Activity extends AppCompatActivity{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_fire__mode, menu);
-        return true;
+        //getMenuInflater().inflate(R.menu.menu_fire__mode, menu);
+        return false;
     }
 
     @Override

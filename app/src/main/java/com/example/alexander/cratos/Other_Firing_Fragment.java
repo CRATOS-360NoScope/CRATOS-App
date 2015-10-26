@@ -13,52 +13,49 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.zerokol.views.JoystickView;
 import com.zerokol.views.JoystickView.OnJoystickMoveListener;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 
 /**
  * Created by Dylan on 10/2/2015.
- * <p/>
+ *
  * The fragment for the turret control. One of two possible files.
  */
 public class Other_Firing_Fragment extends Fragment implements TextureView.SurfaceTextureListener {
 
     /**
      * ThreeState variable
-     * <p/>
+     *
      * Positive:
-     * Horizontal: Right
-     * Vertical: Up
-     * <p/>
+     *  Horizontal: Right
+     *  Vertical: Up
+     *
      * Negative:
-     * Horizontal: Left
-     * Vertical: Down
+     *  Horizontal: Left
+     *  Vertical: Down
      */
     public enum ThreeState {
         POSITIVE,
         NOTHING,
         NEGATIVE
     }
-
-    private final String UP = "up";
-    private final String DOWN = "down";
-    private final String LEFT = "left";
-    private final String RIGHT = "right";
-    private final String NO_V = "stop_vertical";
-    private final String NO_H = "stop_horizontal";
-    private final String DIR = "dir";
-    private final String PWR = "pwr";
+    private final String up = "up";
+    private final String down = "down";
+    private final String left = "left";
+    private final String right = "right";
+    private final String noV = "stop_vertical";
+    private final String noH = "stop_horizontal";
 
     private Button fireButton;
+    private ToggleButton bluetoothButton;
     private JoystickView joystickView;
     private TextureView textureView;
     private MediaPlayer myVid;
-    JSONObject jsonMessage = new JSONObject();
 
     ThreeState sending_vertical = ThreeState.NOTHING;
     ThreeState sending_horizontal = ThreeState.NOTHING;
@@ -70,6 +67,15 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
         Intent intent = new Intent("control-click");
         intent.putExtra("message", message);
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
+    }
+
+    public void changeToggleButtonOnText(){
+        bluetoothButton.setTextOn("Bluetooth Connected");
+        bluetoothButton.setChecked(bluetoothButton.isChecked());
+    }
+
+    public void toggleToggleButton() {
+        bluetoothButton.toggle();
     }
 
     @Override
@@ -89,152 +95,127 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
             }
         });
 
+        bluetoothButton = (ToggleButton) view.findViewById(R.id.toggleBluetooth);
+
+        bluetoothButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(buttonView.isChecked()) {
+                    //bluetoothConnect();
+                    ((Fire_Mode_Activity)getActivity()).bluetoothConnect();
+                } else {
+                    //stopBluetooth();
+                    ((Fire_Mode_Activity)getActivity()).stopBluetooth();
+                }
+            }
+        });
         joystickView = (JoystickView) view.findViewById(R.id.joystickView);
         joystickView.setOnJoystickMoveListener(new OnJoystickMoveListener() {
             @Override
             public void onValueChanged(int angle, int power, int direction) {
-                double radians = Math.toRadians(angle);
-                double vertical = Math.abs(Math.cos(radians) * power);
-                double horizontal = Math.abs(Math.sin(radians) * power);
-                try {
-                    //rewrite for sensitivity?
+                if (power != 0) {
+                    //double radians = Math.toRadians(angle);
+                    //double vertical = Math.cos(radians) * power;
+                    //double horizontal = Math.sin(radians) * power;
                     switch (direction) {
                         case JoystickView.FRONT:
-                            if (sending_vertical != ThreeState.POSITIVE) {
+                            if(sending_vertical != ThreeState.POSITIVE) {
                                 sending_vertical = ThreeState.POSITIVE;
-                                jsonMessage.put(DIR, UP);
-                                jsonMessage.put(PWR, vertical);
-                                sendMessage(jsonMessage.toString());
+                                sendMessage(up);
                             }
-                            if (sending_horizontal != ThreeState.NOTHING) {
+                            if(sending_horizontal != ThreeState.NOTHING) {
                                 sending_horizontal = ThreeState.NOTHING;
-                                jsonMessage.put(DIR, NO_H);
-                                jsonMessage.put(PWR, horizontal);
-                                sendMessage(jsonMessage.toString());
+                                sendMessage(noH);
                             }
                             break;
 
                         case JoystickView.FRONT_RIGHT:
-                            if (sending_vertical != ThreeState.POSITIVE) {
+                            if(sending_vertical != ThreeState.POSITIVE) {
                                 sending_vertical = ThreeState.POSITIVE;
-                                jsonMessage.put(DIR, UP);
-                                jsonMessage.put(PWR, vertical);
-                                sendMessage(jsonMessage.toString());
+                                sendMessage(up);
                             }
-                            if (sending_horizontal != ThreeState.POSITIVE) {
+                            if(sending_horizontal != ThreeState.POSITIVE) {
                                 sending_horizontal = ThreeState.POSITIVE;
-                                jsonMessage.put(DIR, RIGHT);
-                                jsonMessage.put(PWR, horizontal);
-                                sendMessage(jsonMessage.toString());
+                                sendMessage(right);
                             }
                             break;
 
                         case JoystickView.RIGHT:
-                            if (sending_vertical != ThreeState.NOTHING) {
+                            if(sending_vertical != ThreeState.NOTHING) {
                                 sending_vertical = ThreeState.NOTHING;
-                                jsonMessage.put(DIR, NO_V);
-                                jsonMessage.put(PWR, vertical);
-                                sendMessage(jsonMessage.toString());
+                                sendMessage(noV);
                             }
-                            if (sending_horizontal != ThreeState.POSITIVE) {
+                            if(sending_horizontal != ThreeState.POSITIVE) {
                                 sending_horizontal = ThreeState.POSITIVE;
-                                jsonMessage.put(DIR, RIGHT);
-                                jsonMessage.put(PWR, horizontal);
-                                sendMessage(jsonMessage.toString());
+                                sendMessage(right);
                             }
                             break;
 
                         case JoystickView.RIGHT_BOTTOM:
-                            if (sending_vertical != ThreeState.NEGATIVE) {
+                            if(sending_vertical != ThreeState.NEGATIVE) {
                                 sending_vertical = ThreeState.NEGATIVE;
-                                jsonMessage.put(DIR, DOWN);
-                                jsonMessage.put(PWR, vertical);
-                                sendMessage(jsonMessage.toString());
+                                sendMessage(down);
                             }
-                            if (sending_horizontal != ThreeState.POSITIVE) {
+                            if(sending_horizontal != ThreeState.POSITIVE) {
                                 sending_horizontal = ThreeState.POSITIVE;
-                                jsonMessage.put(DIR, RIGHT);
-                                jsonMessage.put(PWR, horizontal);
-                                sendMessage(jsonMessage.toString());
+                                sendMessage(right);
                             }
                             break;
 
                         case JoystickView.BOTTOM:
-                            if (sending_vertical != ThreeState.NEGATIVE) {
+                            if(sending_vertical != ThreeState.NEGATIVE) {
                                 sending_vertical = ThreeState.NEGATIVE;
-                                jsonMessage.put(DIR, DOWN);
-                                jsonMessage.put(PWR, vertical);
-                                sendMessage(jsonMessage.toString());
+                                sendMessage(down);
                             }
-                            if (sending_horizontal != ThreeState.NOTHING) {
+                            if(sending_horizontal != ThreeState.NOTHING) {
                                 sending_horizontal = ThreeState.NOTHING;
-                                jsonMessage.put(DIR, NO_H);
-                                jsonMessage.put(PWR, horizontal);
-                                sendMessage(jsonMessage.toString());
+                                sendMessage(noH);
                             }
                             break;
 
                         case JoystickView.BOTTOM_LEFT:
-                            if (sending_vertical != ThreeState.NEGATIVE) {
+                            if(sending_vertical != ThreeState.NEGATIVE) {
                                 sending_vertical = ThreeState.NEGATIVE;
-                                jsonMessage.put(DIR, DOWN);
-                                jsonMessage.put(PWR, vertical);
-                                sendMessage(jsonMessage.toString());
+                                sendMessage(down);
                             }
-                            if (sending_horizontal != ThreeState.NEGATIVE) {
+                            if(sending_horizontal != ThreeState.NEGATIVE) {
                                 sending_horizontal = ThreeState.NEGATIVE;
-                                jsonMessage.put(DIR, LEFT);
-                                jsonMessage.put(PWR, horizontal);
-                                sendMessage(jsonMessage.toString());
+                                sendMessage(left);
                             }
                             break;
 
                         case JoystickView.LEFT:
-                            if (sending_vertical != ThreeState.NOTHING) {
+                            if(sending_vertical != ThreeState.NOTHING) {
                                 sending_vertical = ThreeState.NOTHING;
-                                jsonMessage.put(DIR, NO_V);
-                                jsonMessage.put(PWR, vertical);
-                                sendMessage(jsonMessage.toString());
+                                sendMessage(noV);
                             }
-                            if (sending_horizontal != ThreeState.NEGATIVE) {
+                            if(sending_horizontal != ThreeState.NEGATIVE) {
                                 sending_horizontal = ThreeState.NEGATIVE;
-                                jsonMessage.put(DIR, LEFT);
-                                jsonMessage.put(PWR, horizontal);
-                                sendMessage(jsonMessage.toString());
+                                sendMessage(left);
                             }
                             break;
 
                         case JoystickView.LEFT_FRONT:
-                            if (sending_vertical != ThreeState.POSITIVE) {
+                            if(sending_vertical != ThreeState.POSITIVE) {
                                 sending_vertical = ThreeState.POSITIVE;
-                                jsonMessage.put(DIR, UP);
-                                jsonMessage.put(PWR, vertical);
-                                sendMessage(jsonMessage.toString());
+                                sendMessage(up);
                             }
-                            if (sending_horizontal != ThreeState.NEGATIVE) {
+                            if(sending_horizontal != ThreeState.NEGATIVE) {
                                 sending_horizontal = ThreeState.NEGATIVE;
-                                jsonMessage.put(DIR, LEFT);
-                                jsonMessage.put(PWR, horizontal);
-                                sendMessage(jsonMessage.toString());
+                                sendMessage(left);
                             }
                             break;
 
                         default:
-                            if (sending_vertical != ThreeState.NOTHING) {
+                            if(sending_vertical != ThreeState.NOTHING) {
                                 sending_vertical = ThreeState.NOTHING;
-                                jsonMessage.put(DIR, NO_V);
-                                jsonMessage.put(PWR, vertical);
-                                sendMessage(jsonMessage.toString());
+                                sendMessage(noV);
                             }
-                            if (sending_horizontal != ThreeState.NOTHING) {
+                            if(sending_horizontal != ThreeState.NOTHING) {
                                 sending_horizontal = ThreeState.NOTHING;
-                                jsonMessage.put(DIR, NO_H);
-                                jsonMessage.put(PWR, horizontal);
-                                sendMessage(jsonMessage.toString());
+                                sendMessage(noH);
                             }
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
             }
         }, JoystickView.DEFAULT_LOOP_INTERVAL);
@@ -245,7 +226,6 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         Surface mySurface = new Surface(surface);
         myVid = MediaPlayer.create(this.getActivity(), R.raw.test);
-        myVid.setVolume(0, 0);
         myVid.setSurface(mySurface);
         myVid.setLooping(true);
         myVid.start();
