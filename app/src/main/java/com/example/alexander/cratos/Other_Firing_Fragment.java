@@ -20,6 +20,9 @@ import android.widget.ToggleButton;
 import com.zerokol.views.JoystickView;
 import com.zerokol.views.JoystickView.OnJoystickMoveListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 /**
  * Created by Dylan on 10/2/2015.
@@ -28,37 +31,23 @@ import com.zerokol.views.JoystickView.OnJoystickMoveListener;
  */
 public class Other_Firing_Fragment extends Fragment implements TextureView.SurfaceTextureListener {
 
-    /**
-     * ThreeState variable
-     *
-     * Positive:
-     *  Horizontal: Right
-     *  Vertical: Up
-     *
-     * Negative:
-     *  Horizontal: Left
-     *  Vertical: Down
-     */
-    public enum ThreeState {
-        POSITIVE,
-        NOTHING,
-        NEGATIVE
-    }
-    private final String up = "up";
-    private final String down = "down";
-    private final String left = "left";
-    private final String right = "right";
-    private final String noV = "stop_vertical";
-    private final String noH = "stop_horizontal";
+    private final String MESSAGE_HORIZONTAL = "Horizontal";
+    private final String MESSAGE_VERTICAL = "Vertical";
+    private final String MESSAGE_FORMAT_DIRECTION = "Direction";
+    private final String MESSAGE_FORMAT_POWER = "Power";
+    private final String MESSAGE_FIRE = "Fire";
+
+    JSONObject jsonMessageDirection = new JSONObject();
+    JSONObject jsonMessageFire = new JSONObject();
+
+    private int currentHorizontal = 0;
+    private int currentVertical = 0;
 
     private Button fireButton;
     private ToggleButton bluetoothButton;
     private JoystickView joystickView;
     private TextureView textureView;
     private MediaPlayer myVid;
-
-    ThreeState sending_vertical = ThreeState.NOTHING;
-    ThreeState sending_horizontal = ThreeState.NOTHING;
 
     public Other_Firing_Fragment() {}
 
@@ -81,6 +70,11 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        try {
+            jsonMessageFire.put(MESSAGE_FIRE, MESSAGE_FIRE);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         View view = inflater.inflate(R.layout.fragment_other_fire, container, false);
 
@@ -91,7 +85,7 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
         fireButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendMessage("fire");
+                sendMessage(jsonMessageFire.toString());
             }
         });
 
@@ -113,109 +107,65 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
         joystickView.setOnJoystickMoveListener(new OnJoystickMoveListener() {
             @Override
             public void onValueChanged(int angle, int power, int direction) {
-                if (power != 0) {
-                    //double radians = Math.toRadians(angle);
-                    //double vertical = Math.cos(radians) * power;
-                    //double horizontal = Math.sin(radians) * power;
-                    switch (direction) {
-                        case JoystickView.FRONT:
-                            if(sending_vertical != ThreeState.POSITIVE) {
-                                sending_vertical = ThreeState.POSITIVE;
-                                sendMessage(up);
-                            }
-                            if(sending_horizontal != ThreeState.NOTHING) {
-                                sending_horizontal = ThreeState.NOTHING;
-                                sendMessage(noH);
-                            }
-                            break;
+                int tempVert = 0;
+                int tempHorz = 0;
+                if(power >= 20) {
+                    power = ((power - 20) * 5)/4;   //scale
+                    power = power - (power % 10);          //remove second digit. ex: 11->10,  88->80
+                   switch(direction) {
+                       case JoystickView.FRONT:
+                           tempVert = power;
+                           break;
 
-                        case JoystickView.FRONT_RIGHT:
-                            if(sending_vertical != ThreeState.POSITIVE) {
-                                sending_vertical = ThreeState.POSITIVE;
-                                sendMessage(up);
-                            }
-                            if(sending_horizontal != ThreeState.POSITIVE) {
-                                sending_horizontal = ThreeState.POSITIVE;
-                                sendMessage(right);
-                            }
-                            break;
+                       case JoystickView.FRONT_RIGHT:
+                           tempHorz = power;
+                           tempVert = power;
+                           break;
 
-                        case JoystickView.RIGHT:
-                            if(sending_vertical != ThreeState.NOTHING) {
-                                sending_vertical = ThreeState.NOTHING;
-                                sendMessage(noV);
-                            }
-                            if(sending_horizontal != ThreeState.POSITIVE) {
-                                sending_horizontal = ThreeState.POSITIVE;
-                                sendMessage(right);
-                            }
-                            break;
+                       case JoystickView.RIGHT:
+                           tempHorz = power;
+                           break;
 
-                        case JoystickView.RIGHT_BOTTOM:
-                            if(sending_vertical != ThreeState.NEGATIVE) {
-                                sending_vertical = ThreeState.NEGATIVE;
-                                sendMessage(down);
-                            }
-                            if(sending_horizontal != ThreeState.POSITIVE) {
-                                sending_horizontal = ThreeState.POSITIVE;
-                                sendMessage(right);
-                            }
-                            break;
+                       case JoystickView.RIGHT_BOTTOM:
+                           tempHorz = power;
+                           tempVert = -power;
+                           break;
 
-                        case JoystickView.BOTTOM:
-                            if(sending_vertical != ThreeState.NEGATIVE) {
-                                sending_vertical = ThreeState.NEGATIVE;
-                                sendMessage(down);
-                            }
-                            if(sending_horizontal != ThreeState.NOTHING) {
-                                sending_horizontal = ThreeState.NOTHING;
-                                sendMessage(noH);
-                            }
-                            break;
+                       case JoystickView.BOTTOM:
+                           tempVert = -power;
+                           break;
 
-                        case JoystickView.BOTTOM_LEFT:
-                            if(sending_vertical != ThreeState.NEGATIVE) {
-                                sending_vertical = ThreeState.NEGATIVE;
-                                sendMessage(down);
-                            }
-                            if(sending_horizontal != ThreeState.NEGATIVE) {
-                                sending_horizontal = ThreeState.NEGATIVE;
-                                sendMessage(left);
-                            }
-                            break;
+                       case JoystickView.BOTTOM_LEFT:
+                           tempHorz = -power;
+                           tempVert = -power;
+                           break;
 
-                        case JoystickView.LEFT:
-                            if(sending_vertical != ThreeState.NOTHING) {
-                                sending_vertical = ThreeState.NOTHING;
-                                sendMessage(noV);
-                            }
-                            if(sending_horizontal != ThreeState.NEGATIVE) {
-                                sending_horizontal = ThreeState.NEGATIVE;
-                                sendMessage(left);
-                            }
-                            break;
+                       case JoystickView.LEFT:
+                           tempHorz = -power;
+                           break;
 
-                        case JoystickView.LEFT_FRONT:
-                            if(sending_vertical != ThreeState.POSITIVE) {
-                                sending_vertical = ThreeState.POSITIVE;
-                                sendMessage(up);
-                            }
-                            if(sending_horizontal != ThreeState.NEGATIVE) {
-                                sending_horizontal = ThreeState.NEGATIVE;
-                                sendMessage(left);
-                            }
-                            break;
-
-                        default:
-                            if(sending_vertical != ThreeState.NOTHING) {
-                                sending_vertical = ThreeState.NOTHING;
-                                sendMessage(noV);
-                            }
-                            if(sending_horizontal != ThreeState.NOTHING) {
-                                sending_horizontal = ThreeState.NOTHING;
-                                sendMessage(noH);
-                            }
+                       case JoystickView.LEFT_FRONT:
+                           tempHorz = -power;
+                           tempVert = power;
+                           break;
+                   }
+                }
+                try {
+                    if (tempHorz != currentHorizontal) {
+                        currentHorizontal = tempHorz;
+                        jsonMessageDirection.put(MESSAGE_FORMAT_DIRECTION, MESSAGE_HORIZONTAL);
+                        jsonMessageDirection.put(MESSAGE_FORMAT_POWER, power);
+                        sendMessage(jsonMessageDirection.toString());
                     }
+
+                    if (tempVert != currentVertical) {
+                        currentVertical = tempVert;
+                        jsonMessageDirection.put(MESSAGE_FORMAT_DIRECTION, MESSAGE_VERTICAL);
+                        jsonMessageDirection.put(MESSAGE_FORMAT_POWER, power);
+                        sendMessage(jsonMessageDirection.toString());
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
         }, JoystickView.DEFAULT_LOOP_INTERVAL);
@@ -228,6 +178,7 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
         myVid = MediaPlayer.create(this.getActivity(), R.raw.test);
         myVid.setSurface(mySurface);
         myVid.setLooping(true);
+        myVid.setVolume(0,0);
         myVid.start();
 
     }
