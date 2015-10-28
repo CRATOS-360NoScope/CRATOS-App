@@ -19,8 +19,8 @@
 
         <com.zerokol.views.JoystickView
             android:id="@+id/joystickView"
-            android:layout_height="120dp"
-            android:layout_width="120dp"
+            android:layout_height="150dp"
+            android:layout_width="150dp"
             android:layout_above="@+id/toggleBluetooth"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true">

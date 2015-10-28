@@ -154,14 +154,14 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
                     if (tempHorz != currentHorizontal) {
                         currentHorizontal = tempHorz;
                         jsonMessageDirection.put(MESSAGE_FORMAT_DIRECTION, MESSAGE_HORIZONTAL);
-                        jsonMessageDirection.put(MESSAGE_FORMAT_POWER, power);
+                        jsonMessageDirection.put(MESSAGE_FORMAT_POWER, currentHorizontal);
                         sendMessage(jsonMessageDirection.toString());
                     }
 
                     if (tempVert != currentVertical) {
                         currentVertical = tempVert;
                         jsonMessageDirection.put(MESSAGE_FORMAT_DIRECTION, MESSAGE_VERTICAL);
-                        jsonMessageDirection.put(MESSAGE_FORMAT_POWER, power);
+                        jsonMessageDirection.put(MESSAGE_FORMAT_POWER, currentVertical);
                         sendMessage(jsonMessageDirection.toString());
                     }
                 } catch (JSONException e) {
