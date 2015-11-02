@@ -1,27 +1,24 @@
 package com.example.alexander.cratos;
 
-import android.content.Intent;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.zerokol.views.JoystickView;
 import com.zerokol.views.JoystickView.OnJoystickMoveListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 
 
 /**
@@ -36,6 +33,7 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
     private final String MESSAGE_FORMAT_DIRECTION = "Direction";
     private final String MESSAGE_FORMAT_POWER = "Power";
     private final String MESSAGE_FIRE = "Fire";
+    private final String ID = "ID";
 
     JSONObject jsonMessageDirection = new JSONObject();
     JSONObject jsonMessageFire = new JSONObject();
@@ -44,34 +42,22 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
     private int currentVertical = 0;
 
     private Button fireButton;
-    private ToggleButton bluetoothButton;
     private JoystickView joystickView;
     private TextureView textureView;
     private MediaPlayer myVid;
 
     public Other_Firing_Fragment() {}
 
-    private void sendMessage(String message) {
-        Log.d("sender", "Broadcasting message");
-        Intent intent = new Intent("control-click");
-        intent.putExtra("message", message);
-        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
-    }
-
-    public void changeToggleButtonOnText(){
-        bluetoothButton.setTextOn("Bluetooth Connected");
-        bluetoothButton.setChecked(bluetoothButton.isChecked());
-    }
-
-    public void toggleToggleButton() {
-        bluetoothButton.toggle();
-    }
-
+    BluetoothSPP bt;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        bt = ((CratosBaseApplication) getActivity().getApplication()).getBt();
+        String id = Settings.Secure.getString(this.getActivity().getApplication().getContentResolver(), Settings.Secure.ANDROID_ID);
+        id = id == null ? "bad_id" : id;
         try {
             jsonMessageFire.put(MESSAGE_FIRE, MESSAGE_FIRE);
+            jsonMessageFire.put(ID, id);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -85,24 +71,10 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
         fireButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendMessage(jsonMessageFire.toString());
+                bt.send(jsonMessageFire.toString(), false);
             }
         });
 
-        bluetoothButton = (ToggleButton) view.findViewById(R.id.toggleBluetooth);
-
-        bluetoothButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(buttonView.isChecked()) {
-                    //bluetoothConnect();
-                    ((Fire_Mode_Activity)getActivity()).bluetoothConnect();
-                } else {
-                    //stopBluetooth();
-                    ((Fire_Mode_Activity)getActivity()).stopBluetooth();
-                }
-            }
-        });
         joystickView = (JoystickView) view.findViewById(R.id.joystickView);
         joystickView.setOnJoystickMoveListener(new OnJoystickMoveListener() {
             @Override
@@ -155,14 +127,14 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
                         currentHorizontal = tempHorz;
                         jsonMessageDirection.put(MESSAGE_FORMAT_DIRECTION, MESSAGE_HORIZONTAL);
                         jsonMessageDirection.put(MESSAGE_FORMAT_POWER, currentHorizontal);
-                        sendMessage(jsonMessageDirection.toString());
+                        bt.send(jsonMessageDirection.toString(), false);
                     }
 
                     if (tempVert != currentVertical) {
                         currentVertical = tempVert;
                         jsonMessageDirection.put(MESSAGE_FORMAT_DIRECTION, MESSAGE_VERTICAL);
                         jsonMessageDirection.put(MESSAGE_FORMAT_POWER, currentVertical);
-                        sendMessage(jsonMessageDirection.toString());
+                        bt.send(jsonMessageDirection.toString(), false);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
