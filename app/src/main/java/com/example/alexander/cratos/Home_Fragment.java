@@ -37,6 +37,9 @@ public class Home_Fragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
         bluetoothButton = (ToggleButton) rootView.findViewById(R.id.toggleButton);
+        if(!((Home_Activity)getActivity()).isBluetoothGood()) {
+            bluetoothButton.setEnabled(false);
+        }
 
         bluetoothButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

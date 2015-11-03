@@ -28,9 +28,9 @@ import app.akexorcist.bluetotohspp.library.BluetoothSPP;
  */
 public class Other_Firing_Fragment extends Fragment implements TextureView.SurfaceTextureListener {
 
+    private final String MESSAGE_FORMAT_COMMAND = "command";
     private final String MESSAGE_HORIZONTAL = "Horizontal";
     private final String MESSAGE_VERTICAL = "Vertical";
-    private final String MESSAGE_FORMAT_DIRECTION = "Direction";
     private final String MESSAGE_FORMAT_POWER = "Power";
     private final String MESSAGE_FIRE = "Fire";
     private final String ID = "ID";
@@ -56,7 +56,7 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
         String id = Settings.Secure.getString(this.getActivity().getApplication().getContentResolver(), Settings.Secure.ANDROID_ID);
         id = id == null ? "bad_id" : id;
         try {
-            jsonMessageFire.put(MESSAGE_FIRE, MESSAGE_FIRE);
+            jsonMessageFire.put(MESSAGE_FORMAT_COMMAND, MESSAGE_FIRE);
             jsonMessageFire.put(ID, id);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -125,14 +125,14 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
                 try {
                     if (tempHorz != currentHorizontal) {
                         currentHorizontal = tempHorz;
-                        jsonMessageDirection.put(MESSAGE_FORMAT_DIRECTION, MESSAGE_HORIZONTAL);
+                        jsonMessageDirection.put(MESSAGE_FORMAT_COMMAND, MESSAGE_HORIZONTAL);
                         jsonMessageDirection.put(MESSAGE_FORMAT_POWER, currentHorizontal);
                         bt.send(jsonMessageDirection.toString(), false);
                     }
 
                     if (tempVert != currentVertical) {
                         currentVertical = tempVert;
-                        jsonMessageDirection.put(MESSAGE_FORMAT_DIRECTION, MESSAGE_VERTICAL);
+                        jsonMessageDirection.put(MESSAGE_FORMAT_COMMAND, MESSAGE_VERTICAL);
                         jsonMessageDirection.put(MESSAGE_FORMAT_POWER, currentVertical);
                         bt.send(jsonMessageDirection.toString(), false);
                     }
