@@ -58,6 +58,7 @@ public class Home_Activity extends ActionBarActivity {
 
             }
         });
+
         bt.setBluetoothStateListener(new BluetoothSPP.BluetoothStateListener() {
             public void onServiceStateChanged(int state) {
                 if (state == BluetoothState.STATE_CONNECTED)
@@ -73,15 +74,21 @@ public class Home_Activity extends ActionBarActivity {
         });
     }
 
+    public boolean isBluetoothGood() {
+        return bt != null;
+    }
+
     @Override
     public void onStart(){
         super.onStart();
-        if(!bt.isBluetoothEnabled()) {
-            bt.enable();
-        } else {
-            if(!bt.isServiceAvailable()) {
-                bt.setupService();
-                bt.startService(BluetoothState.DEVICE_OTHER);
+        if(bt.getBluetoothAdapter() != null) {
+            if (!bt.isBluetoothEnabled()) {
+                bt.enable();
+            } else {
+                if (!bt.isServiceAvailable()) {
+                    bt.setupService();
+                    bt.startService(BluetoothState.DEVICE_OTHER);
+                }
             }
         }
     }
