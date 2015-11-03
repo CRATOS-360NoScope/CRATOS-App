@@ -24,8 +24,12 @@ public class Home_Fragment extends Fragment {
         bluetoothButton.setChecked(bluetoothButton.isChecked());
     }
 
-    public void toggleToggleButton() {
-        bluetoothButton.toggle();
+    public void setBluetoothButtonText(String text){
+        bluetoothButton.setText(text);
+    }
+
+    public void setBluetoothButton(boolean value) {
+        bluetoothButton.setChecked(value);
     }
 
     public Home_Fragment() {

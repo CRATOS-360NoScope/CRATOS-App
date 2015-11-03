@@ -19,13 +19,15 @@ public class Home_Activity extends ActionBarActivity {
 
     BluetoothSPP bt;
     final String TAG = "HOME_ACTIVITY";
+    FragmentManager fm;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        FragmentManager fm = getSupportFragmentManager();
-        final Home_Fragment f = (Home_Fragment) fm.findFragmentById(R.id.fragment);
-
+        fm  = getSupportFragmentManager();
+        final Home_Fragment f= (Home_Fragment) fm.findFragmentById(R.id.fragment);
         bt = ((CratosBaseApplication)getApplication()).getBt();
         bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
             public void onDataReceived(byte[] data, String message) {
@@ -37,19 +39,22 @@ public class Home_Activity extends ActionBarActivity {
             public void onDeviceConnected(String name, String address) {
                 Log.d(TAG, "Device Connected: " + name);
                 Toast.makeText(Home_Activity.this, "Connected to " + name, Toast.LENGTH_SHORT).show();
-                f.changeToggleButtonOnText();
+                f.setBluetoothButton(true);
+                f.setBluetoothButtonText("Bluetooth Connected");
             }
 
             public void onDeviceDisconnected() {
                 Log.d(TAG, "Device Disconnected");
                 Toast.makeText(Home_Activity.this, "Device Disconnected", Toast.LENGTH_SHORT).show();
-                f.toggleToggleButton();
+                f.setBluetoothButton(false);
+                f.setBluetoothButtonText("Bluetooth Disconnected");
             }
 
             public void onDeviceConnectionFailed() {
                 Log.d(TAG, "Device Connection Failed");
                 Toast.makeText(Home_Activity.this, "Connection Failed", Toast.LENGTH_SHORT).show();
-                f.toggleToggleButton();
+                f.setBluetoothButton(false);
+                f.setBluetoothButtonText("Bluetooth Disconnected");
 
             }
         });
@@ -57,9 +62,10 @@ public class Home_Activity extends ActionBarActivity {
             public void onServiceStateChanged(int state) {
                 if (state == BluetoothState.STATE_CONNECTED)
                     Log.d(TAG, "Bluetooth is Connected");
-                else if (state == BluetoothState.STATE_CONNECTING)
+                else if (state == BluetoothState.STATE_CONNECTING) {
                     Log.d(TAG, "Bluetooth Connecting...");
-                else if (state == BluetoothState.STATE_LISTEN)
+                    //f.setBluetoothButtonText("Connecting...");
+                } else if (state == BluetoothState.STATE_LISTEN)
                     Log.d(TAG, "Bluetooth State Listening");
                 else if (state == BluetoothState.STATE_NONE)
                     Log.d(TAG, "Bluetooth State None");
@@ -134,6 +140,10 @@ public class Home_Activity extends ActionBarActivity {
                     finish();
                 }
             }
+        }
+        else {
+            final Home_Fragment f= (Home_Fragment) fm.findFragmentById(R.id.fragment);
+            f.setBluetoothButton(false);
         }
     }
 
