@@ -45,7 +45,7 @@ public class Home_Fragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
         bluetoothButton = (ToggleButton) rootView.findViewById(R.id.toggleButton);
-        if(((CratosBaseApplication) getActivity().getApplication()).getBt() == null) {
+        if(((CratosBaseApplication) getActivity().getApplication()).getBt().getBluetoothAdapter() == null) {
             bluetoothButton.setEnabled(false);
         }
 
