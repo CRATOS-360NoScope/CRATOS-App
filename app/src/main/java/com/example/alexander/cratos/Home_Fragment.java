@@ -31,13 +31,18 @@ public class Home_Fragment extends Fragment {
     public Home_Fragment() {
     }
 
+    public void toggleMenuButtons(boolean on) {
+        firingLogsButton.setEnabled(on);
+        fireModeButton.setEnabled(on);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
         bluetoothButton = (ToggleButton) rootView.findViewById(R.id.toggleButton);
-        if(!((Home_Activity)getActivity()).isBluetoothGood()) {
+        if(((CratosBaseApplication) getActivity().getApplication()).getBt() == null) {
             bluetoothButton.setEnabled(false);
         }
 
@@ -47,13 +52,10 @@ public class Home_Fragment extends Fragment {
                 if(buttonView.isChecked()) {
                     //bluetoothConnect();
                     ((Home_Activity)getActivity()).bluetoothConnect();
-                    firingLogsButton.setEnabled(true);
-                    fireModeButton.setEnabled(true);
                 } else {
                     //stopBluetooth();
                     ((Home_Activity)getActivity()).stopBluetooth();
-                    firingLogsButton.setEnabled(false);
-                    fireModeButton.setEnabled(false);
+                    toggleMenuButtons(false);
                 }
             }
         });

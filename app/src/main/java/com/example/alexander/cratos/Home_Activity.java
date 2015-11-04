@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,16 +16,18 @@ import app.akexorcist.bluetotohspp.library.BluetoothState;
 import app.akexorcist.bluetotohspp.library.DeviceList;
 
 
-public class Home_Activity extends ActionBarActivity {
+public class Home_Activity extends AppCompatActivity {
 
     BluetoothSPP bt;
     final String TAG = "HOME_ACTIVITY";
+    Home_Fragment f;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         FragmentManager fm = getSupportFragmentManager();
-        final Home_Fragment f = (Home_Fragment) fm.findFragmentById(R.id.fragment);
+        f = (Home_Fragment) fm.findFragmentById(R.id.fragment);
 
         bt = ((CratosBaseApplication)getApplication()).getBt();
         bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
@@ -38,6 +41,7 @@ public class Home_Activity extends ActionBarActivity {
                 Log.d(TAG, "Device Connected: " + name);
                 Toast.makeText(Home_Activity.this, "Connected to " + name, Toast.LENGTH_SHORT).show();
                 f.changeToggleButtonOnText();
+                f.toggleMenuButtons(true);
             }
 
             public void onDeviceDisconnected() {
@@ -66,10 +70,6 @@ public class Home_Activity extends ActionBarActivity {
                     Log.d(TAG, "Bluetooth State None");
             }
         });
-    }
-
-    public boolean isBluetoothGood() {
-        return bt != null;
     }
 
     @Override
@@ -141,6 +141,8 @@ public class Home_Activity extends ActionBarActivity {
                     finish();
                 }
             }
+        } else {
+            f.toggleToggleButton();
         }
     }
 
