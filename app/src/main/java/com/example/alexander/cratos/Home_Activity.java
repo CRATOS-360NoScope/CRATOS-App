@@ -46,14 +46,15 @@ public class Home_Activity extends AppCompatActivity {
             public void onDeviceDisconnected() {
                 Log.d(TAG, "Device Disconnected");
                 Toast.makeText(Home_Activity.this, "Device Disconnected", Toast.LENGTH_SHORT).show();
-                f.toggleToggleButton();
+                f.setToggleButton(false);
+                f.toggleMenuButtons(false);
                 ((CratosBaseApplication) getApplication()).bluetoothKilled();
             }
 
             public void onDeviceConnectionFailed() {
                 Log.d(TAG, "Device Connection Failed");
                 Toast.makeText(Home_Activity.this, "Connection Failed", Toast.LENGTH_SHORT).show();
-                f.toggleToggleButton();
+                f.setToggleButton(false);
 
             }
         });
@@ -149,7 +150,7 @@ public class Home_Activity extends AppCompatActivity {
                 }
             }
         } else {
-            f.toggleToggleButton();
+            f.setToggleButton(true);
         }
     }
 
