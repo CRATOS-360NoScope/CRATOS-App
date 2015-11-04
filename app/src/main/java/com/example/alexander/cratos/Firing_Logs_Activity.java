@@ -10,6 +10,7 @@ public class Firing_Logs_Activity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_firing_logs);
+        ((CratosBaseApplication)getApplication()).setLogsActivity(this);
     }
 
 }

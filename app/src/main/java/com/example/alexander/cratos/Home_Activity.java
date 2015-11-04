@@ -29,11 +29,6 @@ public class Home_Activity extends AppCompatActivity {
         f = (Home_Fragment) fm.findFragmentById(R.id.fragment);
 
         bt = ((CratosBaseApplication)getApplication()).getBt();
-        bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
-            public void onDataReceived(byte[] data, String message) {
-                Toast.makeText(Home_Activity.this, message, Toast.LENGTH_SHORT).show();
-            }
-        });
 
         bt.setBluetoothConnectionListener(new BluetoothSPP.BluetoothConnectionListener() {
             public void onDeviceConnected(String name, String address) {
@@ -69,13 +64,6 @@ public class Home_Activity extends AppCompatActivity {
                     Log.d(TAG, "Bluetooth State Listening");
                 else if (state == BluetoothState.STATE_NONE)
                     Log.d(TAG, "Bluetooth State None");
-            }
-        });
-        bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
-            @Override
-            public void onDataReceived(byte[] bytes, String s) {
-                Log.d(TAG, "Message Recieved");
-                Toast.makeText(Home_Activity.this, s, Toast.LENGTH_SHORT).show();
             }
         });
     }
