@@ -47,6 +47,7 @@ public class Home_Activity extends AppCompatActivity {
                 Log.d(TAG, "Device Disconnected");
                 Toast.makeText(Home_Activity.this, "Device Disconnected", Toast.LENGTH_SHORT).show();
                 f.toggleToggleButton();
+                ((CratosBaseApplication) getApplication()).bluetoothKilled();
             }
 
             public void onDeviceConnectionFailed() {
