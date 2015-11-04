@@ -28,13 +28,6 @@ import app.akexorcist.bluetotohspp.library.BluetoothSPP;
  */
 public class Other_Firing_Fragment extends Fragment implements TextureView.SurfaceTextureListener {
 
-    private final String MESSAGE_FORMAT_COMMAND = "command";
-    private final String MESSAGE_HORIZONTAL = "Horizontal";
-    private final String MESSAGE_VERTICAL = "Vertical";
-    private final String MESSAGE_FORMAT_POWER = "Power";
-    private final String MESSAGE_FIRE = "Fire";
-    private final String ID = "ID";
-
     JSONObject jsonMessageDirection = new JSONObject();
     JSONObject jsonMessageFire = new JSONObject();
 
@@ -56,8 +49,8 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
         String id = Settings.Secure.getString(this.getActivity().getApplication().getContentResolver(), Settings.Secure.ANDROID_ID);
         id = id == null ? "bad_id" : id;
         try {
-            jsonMessageFire.put(MESSAGE_FORMAT_COMMAND, MESSAGE_FIRE);
-            jsonMessageFire.put(ID, id);
+            jsonMessageFire.put(getString(R.string.command), getString(R.string.fire));
+            jsonMessageFire.put(getString(R.string.id), id);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -125,15 +118,15 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
                 try {
                     if (tempHorz != currentHorizontal) {
                         currentHorizontal = tempHorz;
-                        jsonMessageDirection.put(MESSAGE_FORMAT_COMMAND, MESSAGE_HORIZONTAL);
-                        jsonMessageDirection.put(MESSAGE_FORMAT_POWER, currentHorizontal);
+                        jsonMessageDirection.put(getString(R.string.command), getString(R.string.horizontal));
+                        jsonMessageDirection.put(getString(R.string.power), currentHorizontal);
                         bt.send(jsonMessageDirection.toString(), false);
                     }
 
                     if (tempVert != currentVertical) {
                         currentVertical = tempVert;
-                        jsonMessageDirection.put(MESSAGE_FORMAT_COMMAND, MESSAGE_VERTICAL);
-                        jsonMessageDirection.put(MESSAGE_FORMAT_POWER, currentVertical);
+                        jsonMessageDirection.put(getString(R.string.command), getString(R.string.vertical));
+                        jsonMessageDirection.put(getString(R.string.power), currentVertical);
                         bt.send(jsonMessageDirection.toString(), false);
                     }
                 } catch (JSONException e) {

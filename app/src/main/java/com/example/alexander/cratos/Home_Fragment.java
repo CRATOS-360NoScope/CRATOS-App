@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -61,14 +64,27 @@ public class Home_Fragment extends Fragment {
         });
 
         fireModeButton = (Button)rootView.findViewById(R.id.btnFireMode);
-        firingLogsButton = (Button)rootView.findViewById(R.id.btnFiringLogs);
-
         fireModeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Switch to other_firing_mode to see/test it.
                 Intent intent = new Intent(getActivity(), Fire_Mode_Activity.class);
                 startActivity(intent);
+            }
+        });
+
+        firingLogsButton = (Button)rootView.findViewById(R.id.btnFiringLogs);
+        firingLogsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JSONObject jsonMessageLog;
+                try {
+                    jsonMessageLog = new JSONObject();
+                    jsonMessageLog.put(getString(R.string.command), getString(R.string.log));
+                    ((CratosBaseApplication) getActivity().getApplication()).getBt().send(jsonMessageLog.toString(),false);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
 

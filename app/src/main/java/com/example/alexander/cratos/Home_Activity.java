@@ -3,7 +3,6 @@ package com.example.alexander.cratos;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -68,6 +67,13 @@ public class Home_Activity extends AppCompatActivity {
                     Log.d(TAG, "Bluetooth State Listening");
                 else if (state == BluetoothState.STATE_NONE)
                     Log.d(TAG, "Bluetooth State None");
+            }
+        });
+        bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
+            @Override
+            public void onDataReceived(byte[] bytes, String s) {
+                Log.d(TAG, "Message Recieved");
+                Toast.makeText(Home_Activity.this, s, Toast.LENGTH_SHORT).show();
             }
         });
     }
