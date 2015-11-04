@@ -5,6 +5,7 @@
     <string name="bluetooth_connect">Bluetooth Connect</string>
     <string name="bluetooth_stop">Stop Bluetooth</string>
     <string name="title_activity_fire__mode_">Fire Mode</string>
+    <string name="title_activity_firing__logs_">Firing Logs</string>
     <string name="command">command</string>
     <string name="horizontal">Horizontal</string>
     <string name="vertical">Vertical</string>

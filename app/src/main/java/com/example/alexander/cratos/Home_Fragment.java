@@ -82,6 +82,9 @@ public class Home_Fragment extends Fragment {
                     jsonMessageLog = new JSONObject();
                     jsonMessageLog.put(getString(R.string.command), getString(R.string.log));
                     ((CratosBaseApplication) getActivity().getApplication()).getBt().send(jsonMessageLog.toString(),false);
+
+                    Intent intent = new Intent(getActivity(), Firing_Logs_Activity.class);
+                    startActivity(intent);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
