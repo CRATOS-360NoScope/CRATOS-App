@@ -13,4 +13,7 @@
     <string name="fire">Fire</string>
     <string name="id">ID</string>
     <string name="log">Logs</string>
+    <string name="first">First</string>
+    <string name="mTrue">True</string>
+    <string name="mFalse">False</string>
 </resources>
