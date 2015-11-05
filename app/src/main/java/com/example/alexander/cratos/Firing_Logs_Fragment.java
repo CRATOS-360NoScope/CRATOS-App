@@ -15,7 +15,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 
@@ -44,9 +49,9 @@ public class Firing_Logs_Fragment extends Fragment {
         bt = ((CratosBaseApplication)getActivity().getApplication()).getBt();
 
         final ArrayAdapter<String> adapter;
-        final ArrayList<String> listItems = new ArrayList();
+        final ArrayList<String> listItems = new ArrayList<>();
 
-        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, listItems);
+        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, listItems);
         listView.setAdapter(adapter);
 
         jsonMessageLog = new JSONObject();
@@ -65,11 +70,21 @@ public class Firing_Logs_Fragment extends Fragment {
                 try {
                     JSONArray array = new JSONArray(s);
                     int size = array.length();
+                    DateFormat oldFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.ENGLISH);
+                    DateFormat newFormat = DateFormat.getDateTimeInstance(
+                            DateFormat.MEDIUM,
+                            DateFormat.MEDIUM,
+                            Locale.ENGLISH);
                     for(int i = 0; i < size; i++) {
-                        listItems.add("\n" + array.getJSONObject(i).getString("device_id") + "\n\n" + array.getJSONObject(i).getString("discharge_timestamp") + "\n");
+                        Date d = oldFormat.parse(array.getJSONObject(i).getString("discharge_timestamp"));
+                        String parsedDate = newFormat.format(d);
+                        listItems.add("\n" + array.getJSONObject(i).getString("name") + "\n\n" + parsedDate + "\n");
                     }
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    Log.d("DATA RECIEVED", e.getMessage());
                     e.printStackTrace();
                 }
             }
