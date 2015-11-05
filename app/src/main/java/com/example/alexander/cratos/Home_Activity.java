@@ -1,14 +1,23 @@
 package com.example.alexander.cratos;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.provider.Settings;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import app.akexorcist.bluetotohspp.library.BluetoothState;
@@ -20,14 +29,18 @@ public class Home_Activity extends AppCompatActivity {
     BluetoothSPP bt;
     final String TAG = "HOME_ACTIVITY";
     Home_Fragment f;
+    JSONObject register;
+    String name, id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        register = new JSONObject();
+        id = Settings.Secure.getString(getApplication().getContentResolver(), Settings.Secure.ANDROID_ID);
+        id = id == null ? "bad_id" : id;
         FragmentManager fm = getSupportFragmentManager();
         f = (Home_Fragment) fm.findFragmentById(R.id.fragment);
-
         bt = ((CratosBaseApplication)getApplication()).getBt();
 
         bt.setBluetoothConnectionListener(new BluetoothSPP.BluetoothConnectionListener() {
@@ -36,6 +49,7 @@ public class Home_Activity extends AppCompatActivity {
                 Toast.makeText(Home_Activity.this, "Connected to " + name, Toast.LENGTH_SHORT).show();
                 f.changeToggleButtonOnText();
                 f.toggleMenuButtons(true);
+                bt.send(register.toString(), false);
             }
 
             public void onDeviceDisconnected() {
@@ -66,6 +80,58 @@ public class Home_Activity extends AppCompatActivity {
                     Log.d(TAG, "Bluetooth State None");
             }
         });
+
+        getUserName();
+    }
+
+    public void getUserName() {
+        SharedPreferences settings = getSharedPreferences(getString(R.string.prefs), 0);
+        name = settings.getString(getString(R.string.name), null);
+        if(name == null || name.equals("")) {
+            requestNameFromUser();
+        } else {
+            try {
+                register.put(getString(R.string.command), getString(R.string.register));
+                register.put(getString(R.string.name), name);
+                register.put(getString(R.string.id), id);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void requestNameFromUser() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Nickname Input");
+
+        // Set up the input
+        final EditText input = new EditText(this);
+        // Specify the type of input expected
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+         // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                name = input.getText().toString();
+                if(name == null || name.equals("") ) {
+                    requestNameFromUser();
+                }else {
+                    SharedPreferences settings = getSharedPreferences(getString(R.string.prefs), 0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString(getString(R.string.name), name);
+                    editor.commit();
+                    try {
+                        register.put(getString(R.string.command), getString(R.string.register));
+                        register.put(getString(R.string.name), name);
+                        register.put(getString(R.string.id), id);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        builder.show();
     }
 
     @Override

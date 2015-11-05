@@ -16,4 +16,7 @@
     <string name="first">First</string>
     <string name="mTrue">True</string>
     <string name="mFalse">False</string>
+    <string name="name">Name</string>
+    <string name="register">Register</string>
+    <string name="prefs">Preferences</string>
 </resources>
