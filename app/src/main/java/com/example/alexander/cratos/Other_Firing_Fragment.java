@@ -11,6 +11,8 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
 import com.zerokol.views.JoystickView;
 import com.zerokol.views.JoystickView.OnJoystickMoveListener;
@@ -34,7 +36,12 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
     private int currentHorizontal = 0;
     private int currentVertical = 0;
 
+    private boolean fireLock = false;
+    private boolean aimLock = false;
+
     private Button fireButton;
+    private Switch fireSwitch;
+    private Switch aimSwitch;
     private JoystickView joystickView;
     private TextureView textureView;
     private MediaPlayer myVid;
@@ -60,11 +67,29 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
         textureView = (TextureView) view.findViewById(R.id.textureView);
         textureView.setSurfaceTextureListener(this);
 
+        fireSwitch = (Switch) view.findViewById(R.id.fireSwitch);
+        fireSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                fireLock = isChecked;
+            }
+        });
+
+        aimSwitch = (Switch) view.findViewById(R.id.aimSwitch);
+        aimSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                aimLock = isChecked;
+            }
+        });
+
         fireButton = (Button) view.findViewById(R.id.firingButton);
         fireButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bt.send(jsonMessageFire.toString(), false);
+                if(!fireLock) {
+                    bt.send(jsonMessageFire.toString(), false);
+                }
             }
         });
 
@@ -72,65 +97,67 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
         joystickView.setOnJoystickMoveListener(new OnJoystickMoveListener() {
             @Override
             public void onValueChanged(int angle, int power, int direction) {
-                int tempVert = 0;
-                int tempHorz = 0;
-                if(power >= 20) {
-                    power = ((power - 20) * 5)/4;   //scale
-                    power = power - (power % 10);          //remove second digit. ex: 11->10,  88->80
-                   switch(direction) {
-                       case JoystickView.FRONT:
-                           tempVert = power;
-                           break;
+                if(!aimLock) {
+                    int tempVert = 0;
+                    int tempHorz = 0;
+                    if(power >= 20) {
+                        power = ((power - 20) * 5)/4;   //scale
+                        power = power - (power % 10);          //remove second digit. ex: 11->10,  88->80
+                       switch(direction) {
+                           case JoystickView.FRONT:
+                               tempVert = power;
+                               break;
 
-                       case JoystickView.FRONT_RIGHT:
-                           tempHorz = power;
-                           tempVert = power;
-                           break;
+                           case JoystickView.FRONT_RIGHT:
+                               tempHorz = power;
+                               tempVert = power;
+                               break;
 
-                       case JoystickView.RIGHT:
-                           tempHorz = power;
-                           break;
+                           case JoystickView.RIGHT:
+                               tempHorz = power;
+                               break;
 
-                       case JoystickView.RIGHT_BOTTOM:
-                           tempHorz = power;
-                           tempVert = -power;
-                           break;
+                           case JoystickView.RIGHT_BOTTOM:
+                               tempHorz = power;
+                               tempVert = -power;
+                               break;
 
-                       case JoystickView.BOTTOM:
-                           tempVert = -power;
-                           break;
+                           case JoystickView.BOTTOM:
+                               tempVert = -power;
+                               break;
 
-                       case JoystickView.BOTTOM_LEFT:
-                           tempHorz = -power;
-                           tempVert = -power;
-                           break;
+                           case JoystickView.BOTTOM_LEFT:
+                               tempHorz = -power;
+                               tempVert = -power;
+                               break;
 
-                       case JoystickView.LEFT:
-                           tempHorz = -power;
-                           break;
+                           case JoystickView.LEFT:
+                               tempHorz = -power;
+                               break;
 
-                       case JoystickView.LEFT_FRONT:
-                           tempHorz = -power;
-                           tempVert = power;
-                           break;
-                   }
-                }
-                try {
-                    if (tempHorz != currentHorizontal) {
-                        currentHorizontal = tempHorz;
-                        jsonMessageDirection.put(getString(R.string.command), getString(R.string.horizontal));
-                        jsonMessageDirection.put(getString(R.string.power), currentHorizontal);
-                        bt.send(jsonMessageDirection.toString(), false);
+                           case JoystickView.LEFT_FRONT:
+                               tempHorz = -power;
+                               tempVert = power;
+                               break;
+                       }
                     }
+                    try {
+                        if (tempHorz != currentHorizontal) {
+                            currentHorizontal = tempHorz;
+                            jsonMessageDirection.put(getString(R.string.command), getString(R.string.horizontal));
+                            jsonMessageDirection.put(getString(R.string.power), currentHorizontal);
+                            bt.send(jsonMessageDirection.toString(), false);
+                        }
 
-                    if (tempVert != currentVertical) {
-                        currentVertical = tempVert;
-                        jsonMessageDirection.put(getString(R.string.command), getString(R.string.vertical));
-                        jsonMessageDirection.put(getString(R.string.power), currentVertical);
-                        bt.send(jsonMessageDirection.toString(), false);
+                        if (tempVert != currentVertical) {
+                            currentVertical = tempVert;
+                            jsonMessageDirection.put(getString(R.string.command), getString(R.string.vertical));
+                            jsonMessageDirection.put(getString(R.string.power), currentVertical);
+                            bt.send(jsonMessageDirection.toString(), false);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
             }
         }, JoystickView.DEFAULT_LOOP_INTERVAL);

@@ -37,5 +37,45 @@
             android:layout_alignParentStart="true"
             android:layout_margin="20dp" />
 
+        <RelativeLayout
+            android:layout_width="150dp"
+            android:layout_height="80dp"
+            android:background="#1e000000"
+            android:layout_margin="5dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true">
+
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fire Lock"
+                android:id="@+id/fireSwitch"
+                android:textColor="#ffffff"
+                android:shadowColor="#000000"
+                android:checked="false"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp" />
+
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Aiming Lock"
+                android:id="@+id/aimSwitch"
+                android:textColor="#ffffff"
+                android:checked="false"
+                android:shadowColor="#000000"
+                android:layout_above="@+id/fireSwitch"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+
     </RelativeLayout>
 </RelativeLayout>
