@@ -12,4 +12,10 @@ public class Fire_Mode_Activity extends AppCompatActivity{
         setContentView(R.layout.activity_other_fire__mode);
         ((CratosBaseApplication)getApplication()).setFiringActivity(this);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ((CratosBaseApplication)getApplication()).setFiringActivity(null);
+    }
 }

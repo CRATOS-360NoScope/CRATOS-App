@@ -13,4 +13,10 @@ public class Firing_Logs_Activity extends ActionBarActivity {
         ((CratosBaseApplication)getApplication()).setLogsActivity(this);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ((CratosBaseApplication)getApplication()).setFiringActivity(null);
+    }
+
 }
