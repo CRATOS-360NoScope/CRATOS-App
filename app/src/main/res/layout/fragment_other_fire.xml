@@ -73,18 +73,21 @@
         </RelativeLayout>
 
         <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="640px"
+            android:layout_height="480px"
             android:layout_above="@+id/firingButton"
-            android:layout_below="@+id/relativeLayout">
+            android:layout_below="@+id/relativeLayout"
+            android:layout_centerHorizontal="true">
+
             <WebView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="640px"
+                android:layout_height="480px"
                 android:id="@+id/webView"
                 android:layout_alignRight="@+id/relativeLayout"
                 android:layout_alignEnd="@+id/relativeLayout"
                 android:layout_alignLeft="@+id/firingButton"
-                android:layout_alignStart="@+id/firingButton" />
+                android:layout_alignStart="@+id/firingButton"
+                android:layout_gravity="center" />
         </FrameLayout>
 
 

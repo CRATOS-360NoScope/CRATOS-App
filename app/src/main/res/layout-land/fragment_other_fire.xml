@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="#FF000000">
+
+
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.zerokol.views.JoystickView
+        android:id="@+id/joystickView"
+        android:layout_height="125dp"
+        android:layout_width="125dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+    </com.zerokol.views.JoystickView>
+
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/firingButton"
+        android:background="@drawable/firing_button"
+        android:text="FIRE"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="10dp" />
+
+    <RelativeLayout
+        android:layout_width="150dp"
+        android:layout_height="80dp"
+        android:background="#1e000000"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/relativeLayout"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_toRightOf="@+id/frameLayout"
+        android:layout_toEndOf="@+id/frameLayout"
+        android:layout_marginLeft="10dp">
+
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fire Lock"
+            android:id="@+id/fireSwitch"
+            android:textColor="#ffffff"
+            android:shadowColor="#000000"
+            android:checked="false"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp" />
+
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Aiming Lock"
+            android:id="@+id/aimSwitch"
+            android:textColor="#ffffff"
+            android:checked="false"
+            android:shadowColor="#000000"
+            android:layout_above="@+id/fireSwitch"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="640px"
+        android:layout_height="480px"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/frameLayout">
+
+        <WebView
+            android:layout_width="640px"
+            android:layout_height="480px"
+            android:id="@+id/webView"
+            android:layout_alignRight="@+id/relativeLayout"
+            android:layout_alignEnd="@+id/relativeLayout"
+            android:layout_alignLeft="@+id/firingButton"
+            android:layout_alignStart="@+id/firingButton"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+
+</RelativeLayout>
+</RelativeLayout>
