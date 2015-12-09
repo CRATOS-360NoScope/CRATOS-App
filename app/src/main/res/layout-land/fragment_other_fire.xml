@@ -78,19 +78,15 @@ android:background="#FF000000">
     </RelativeLayout>
 
     <FrameLayout
-        android:layout_width="640px"
-        android:layout_height="480px"
+        android:layout_width="320dp"
+        android:layout_height="250dp"
         android:layout_centerHorizontal="true"
         android:id="@+id/frameLayout">
 
         <WebView
-            android:layout_width="640px"
-            android:layout_height="480px"
+            android:layout_width="320dp"
+            android:layout_height="250dp"
             android:id="@+id/webView"
-            android:layout_alignRight="@+id/relativeLayout"
-            android:layout_alignEnd="@+id/relativeLayout"
-            android:layout_alignLeft="@+id/firingButton"
-            android:layout_alignStart="@+id/firingButton"
             android:layout_gravity="center" />
     </FrameLayout>
 
