@@ -10,6 +10,7 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -28,7 +29,7 @@ import app.akexorcist.bluetotohspp.library.BluetoothSPP;
  *
  * The fragment for the turret control. One of two possible files.
  */
-public class Other_Firing_Fragment extends Fragment implements TextureView.SurfaceTextureListener {
+public class Other_Firing_Fragment extends Fragment {
 
     JSONObject jsonMessageDirection = new JSONObject();
     JSONObject jsonMessageFire = new JSONObject();
@@ -40,10 +41,10 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
     private boolean aimLock = false;
 
     private Button fireButton;
+    private WebView webView;
     private Switch fireSwitch;
     private Switch aimSwitch;
     private JoystickView joystickView;
-    private TextureView textureView;
     private MediaPlayer myVid;
 
     public Other_Firing_Fragment() {}
@@ -64,8 +65,10 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
 
         View view = inflater.inflate(R.layout.fragment_other_fire, container, false);
 
-        textureView = (TextureView) view.findViewById(R.id.textureView);
-        textureView.setSurfaceTextureListener(this);
+        webView = (WebView) view.findViewById(R.id.webView);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadUrl("http://10.0.0.12:5001/stream_simple.html");
+        //webView.loadUrl("http://www.google.com");
 
         fireSwitch = (Switch) view.findViewById(R.id.fireSwitch);
         fireSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -162,31 +165,5 @@ public class Other_Firing_Fragment extends Fragment implements TextureView.Surfa
             }
         }, JoystickView.DEFAULT_LOOP_INTERVAL);
         return view;
-    }
-
-    @Override
-    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-        Surface mySurface = new Surface(surface);
-        myVid = MediaPlayer.create(this.getActivity(), R.raw.test);
-        myVid.setSurface(mySurface);
-        myVid.setLooping(true);
-        myVid.setVolume(0,0);
-        myVid.start();
-
-    }
-
-    @Override
-    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-
-    }
-
-    @Override
-    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-        return true;
-    }
-
-    @Override
-    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-        //nope
     }
 }
